@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     # searching for the element
     print("Searching for the 2_element")
-    found_index = linked_list.get_first_index('2_element')
+    found_index = linked_list.find_first_index('2_element')
     print(f'Found index: {found_index}')
     print()
 
@@ -71,11 +71,11 @@ if __name__ == '__main__':
     print("Adding three more elements to the list:")
     linked_list.push('8_element')
     linked_list.push('8_element')
-    linked_list.insert('8_element', 5)
+    linked_list.insert('8_element', 4)
     linked_list.display()
     print()
 
     # searching for all occurrences
     print("Searching for all occurrences of the 8_element")
-    found_index = linked_list.get_all_index('8_element')
+    found_index = linked_list.find_all_indexes('8_element')
     print(f'Found indexes: {found_index}')

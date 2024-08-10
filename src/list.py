@@ -64,6 +64,7 @@ class List:
         """
         if self.is_empty():
             self.push(data)
+            return
 
         new_node = _ListNode(data)
         self.tail.next = new_node
@@ -112,6 +113,7 @@ class List:
             return False
 
         node_to_delete = self._get_node(position)
+
         # node to be deleted is the only node in list
         if node_to_delete is self.head and node_to_delete is self.tail:
             self.head = None
@@ -126,13 +128,8 @@ class List:
             self.tail.next = None
         # 3+ nodes in the list and the one to be deleted is between others
         else:
-            # node_to_delete.prev.next = node_to_delete.next
-            # node_to_delete.next.prev = node_to_delete.prev
-            previous_node = self._get_node(position - 1)
-            next_node = self._get_node(position + 1)
-
-            previous_node.next = next_node
-            next_node.prev = previous_node
+            node_to_delete.prev.next = node_to_delete.next
+            node_to_delete.next.prev = node_to_delete.prev
 
         del node_to_delete
         self.length -= 1
@@ -150,7 +147,7 @@ class List:
             current_index += 1
         print(f'List length: {self.length}')
 
-    def get_first_index(self, data: Any, start_index: int = 0) -> int:
+    def find_first_index(self, data: Any, start_index: int = 0) -> int:
         """
         Returns an index of the first occurrence of the list node with specific data.
         :param start_index: index of element from which to start searching
@@ -158,7 +155,7 @@ class List:
         :return: index of the list node, -1 if not found
         """
         if not self._is_valid_index(start_index):
-            return -1  # zmienic na wyjatek
+            raise ValueError("Invalid start index")
 
         current_node = self._get_node(start_index)
         current_index = start_index
@@ -168,7 +165,9 @@ class List:
             current_node = current_node.next
             current_index += 1
 
-    def get_all_index(self, data: Any) -> [int]:
+        return -1  # Element not found
+
+    def find_all_indexes(self, data: Any) -> list[int]:
         """
         Returns an index of the first occurrence of the list node with specific data.
         :param data: data stored in the list node
@@ -178,14 +177,20 @@ class List:
         current_index = 0
         result = 0
 
-        while result != -1:
-            result = self.get_first_index(data, start_index=current_index)
-            if result != -1:
-                found_indexes.append(result)
+        while current_index < self.length:
+            result = self.find_first_index(data, start_index=current_index)
+            if result == -1:
+                break  # tutaj raczej obsluga bledu invalid index error czy nie? bo dziala i nwm czemu xd
+            found_indexes.append(result)
             current_index = result + 1
         return found_indexes
 
     def _get_node(self, position: int) -> _ListNode:
+        """
+        Returns list node from the specific position.
+        :param position: element's index (from 0)
+        :return: list node
+        """
         current_node = self.head
         current_index = 0
         while current_node and current_index < position:
@@ -193,5 +198,22 @@ class List:
             current_index += 1
         return current_node
 
-    def _is_valid_index(self, index):
+    def _is_valid_index(self, index: int) -> bool:
+        """
+        Checks if the given index is within the bounds of the list.
+        :param index: index to check
+        :return: True if valid, False otherwise
+        """
         return 0 <= index < self.length
+
+# to-do
+# 1. poprawic find_all_indexes czemu dziala bez obslugi bledu?
+# 2. poprawic delete - optymalizacja, skrocenie kodu
+# 3. W metodach takich jak insert, delete oraz _get_node można zoptymalizować dostęp do węzłów.
+# Zamiast iterować od początku listy, można zdecydować, czy lepiej zacząć iterację od głowy (head) czy od ogona (tail),
+# w zależności od pozycji, do której chcemy się dostać.
+# 4. W metodach takich jak pop, delete, insert oraz get_first_index warto rozważyć rzucanie odpowiednich wyjątków
+# (np. IndexError), zamiast zwracania wartości None lub False w przypadku błędu.
+# Zwiększy to czytelność kodu i ułatwi debugowanie.
+# 5. W metodach get_first_index i get_all_index zmienić zwracanie wartości -1 na rzucanie wyjątku,
+# np. ValueError, jeśli element nie zostanie znaleziony.
