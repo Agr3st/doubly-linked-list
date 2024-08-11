@@ -114,19 +114,14 @@ class List:
 
         node_to_delete = self._get_node(position)
 
-        # node to be deleted is the only node in list
-        if node_to_delete is self.head and node_to_delete is self.tail:
-            self.head = None
-            self.tail = None
-        # 2+ nodes in the list and the one to be deleted is the first one
-        elif node_to_delete is self.head:
-            self.head = node_to_delete.next
-            self.head.prev = None
-        # 2+ nodes in the list and the one to be deleted is the last one
+        if node_to_delete is self.head:
+            self.head = self.head.next
+            if self.head:
+                self.head.prev = None
         elif node_to_delete is self.tail:
-            self.tail = node_to_delete.prev
-            self.tail.next = None
-        # 3+ nodes in the list and the one to be deleted is between others
+            self.tail = self.tail.prev
+            if self.tail:
+                self.tail.next = None
         else:
             node_to_delete.prev.next = node_to_delete.next
             node_to_delete.next.prev = node_to_delete.prev
@@ -208,7 +203,6 @@ class List:
 
 # to-do
 # 1. poprawic find_all_indexes czemu dziala bez obslugi bledu?
-# 2. poprawic delete - optymalizacja, skrocenie kodu
 # 3. W metodach takich jak insert, delete oraz _get_node można zoptymalizować dostęp do węzłów.
 # Zamiast iterować od początku listy, można zdecydować, czy lepiej zacząć iterację od głowy (head) czy od ogona (tail),
 # w zależności od pozycji, do której chcemy się dostać.
