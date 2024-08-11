@@ -130,18 +130,6 @@ class List:
         self.length -= 1
         return True
 
-    def display(self) -> None:
-        """
-        Display the list (index: data), and list length.
-        """
-        current_node = self.head
-        current_index = 0
-        while current_node:
-            print(f'{current_index}: {current_node}')
-            current_node = current_node.next
-            current_index += 1
-        print(f'List length: {self.length}')
-
     def find_first_index(self, data: Any, start_index: int = 0) -> int:
         """
         Returns an index of the first occurrence of the list node with specific data.
@@ -175,10 +163,24 @@ class List:
         while current_index < self.length:
             result = self.find_first_index(data, start_index=current_index)
             if result == -1:
-                break  # tutaj raczej obsluga bledu invalid index error czy nie? bo dziala i nwm czemu xd
+                break
             found_indexes.append(result)
             current_index = result + 1
         return found_indexes
+
+    def display(self) -> None:
+        """
+        Display the list (index: data), and list length.
+        """
+        current_node = self.head
+        current_index = 0
+        while current_node:
+            print(f' {current_index}: {current_node} ', end="")
+            if current_index >= 0 and current_node.next is not None:
+                print("<====>", end="")
+            current_node = current_node.next
+            current_index += 1
+        print(f'\nList length: {self.length}')
 
     def _get_node(self, position: int) -> _ListNode:
         """
