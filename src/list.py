@@ -22,6 +22,10 @@ class List:
         self.length = 0
 
     def is_empty(self) -> bool:
+        """
+        Checks if the list is empty.
+        :return: True if empty, False otherwise
+        """
         return self.head is None
 
     def push(self, data: Any) -> None:
