@@ -45,7 +45,7 @@ class List:
 
     def pop(self) -> _ListNode:
         """
-        Pop the first element from the return it.
+        Pop the first element from the beginning.
         :return: popped list node
         """
         # 0 nodes
