@@ -1,6 +1,10 @@
 from typing import Any
 
 
+class ElementNotFoundError(Exception):
+    """Exception raised when an element is not found in the list."""
+
+
 class _ListNode:
     def __init__(self, data: Any):
         self.data = data
@@ -42,7 +46,7 @@ class List:
         """
         # 0 nodes
         if self.is_empty():
-            return None
+            raise IndexError("The list is empty.")
 
         node_to_pop = self.head
         # 1 node
@@ -72,19 +76,19 @@ class List:
         self.tail = new_node
         self.length += 1
 
-    def insert(self, data: Any, position: int) -> bool:
+    def insert(self, data: Any, position: int) -> None:
         """
         Insert a node with data at specific position in the list (index from 0).
         :param data: data to be stored in list node
         :param position: new node's index
-        :return: True if success, else False
+        :raises IndexError: if position is out of range.
         """
         if position < 0 or position > self.length:
-            return False
+            raise IndexError("Position out of range.")
 
         if position == 0:
             self.push(data)
-            return True
+            return
 
         previous_node = self._get_node(position - 1)
         if previous_node is self.tail:
@@ -97,16 +101,16 @@ class List:
             previous_node.next = new_node
             self.length += 1
 
-        return True
-
-    def delete(self, position: int) -> bool:
+    def delete(self, position: int) -> None:
         """
         Delete a list node from the specific position.
         :param position: element's index (from 0)
-        :return: True if success, False if failure
+        :raises IndexError: if the list is empty or the position is out of range.
         """
-        if self.is_empty() or position < 0 or position >= self.length:
-            return False
+        if self.is_empty():
+            raise IndexError("Cannot delete an element from an empty list.")
+        if position < 0 or position >= self.length:
+            raise IndexError("Position out of range.")
 
         node_to_delete = self._get_node(position)
 
@@ -124,16 +128,17 @@ class List:
 
         del node_to_delete
         self.length -= 1
-        return True
 
     def find_first_index(self, data: Any, start_index: int = 0) -> int:
         """
         Returns an index of the first occurrence of the list node with specific data.
         :param start_index: index of element from which to start searching
         :param data: data stored in the list node
-        :return: index of the list node, -1 if not found
+        :return: index of the list node
+        :raises ValueError: if start_index is invalid
+        :raises ElementNotFoundError: if element not found
         """
-        if not self._is_valid_index(start_index):
+        if not self._is_valid_index(start_index) or self.is_empty():
             raise ValueError("Invalid start index")
 
         current_node = self._get_node(start_index)
@@ -144,24 +149,27 @@ class List:
             current_node = current_node.next
             current_index += 1
 
-        return -1  # Element not found
+        raise ElementNotFoundError(f"Element {data} not found in the list.")
 
     def find_all_indexes(self, data: Any) -> list[int]:
         """
         Returns an index of the first occurrence of the list node with specific data.
         :param data: data stored in the list node
-        :return: list of indexes of the list nodes, -1 if not found
+        :return: list of indexes of the list nodes
         """
         found_indexes = []
         current_index = 0
         result = 0
 
         while current_index < self.length:
-            result = self.find_first_index(data, start_index=current_index)
-            if result == -1:
+            try:
+                result = self.find_first_index(data, start_index=current_index)
+            except ElementNotFoundError:
                 break
-            found_indexes.append(result)
-            current_index = result + 1
+            else:
+                found_indexes.append(result)
+                current_index = result + 1
+
         return found_indexes
 
     def display(self) -> None:
@@ -205,11 +213,3 @@ class List:
         :return: True if valid, False otherwise
         """
         return 0 <= index < self.length
-
-# to-do
-# 1. poprawic find_all_indexes czemu dziala bez obslugi bledu?
-# 4. W metodach takich jak pop, delete, insert oraz get_first_index warto rozważyć rzucanie odpowiednich wyjątków
-# (np. IndexError), zamiast zwracania wartości None lub False w przypadku błędu.
-# Zwiększy to czytelność kodu i ułatwi debugowanie.
-# 5. W metodach get_first_index i get_all_index zmienić zwracanie wartości -1 na rzucanie wyjątku,
-# np. ValueError, jeśli element nie zostanie znaleziony.
