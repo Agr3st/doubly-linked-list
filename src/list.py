@@ -90,15 +90,11 @@ class List:
         if previous_node is self.tail:
             self.append(data)
         else:
-            next_node = self._get_node(position)
             new_node = _ListNode(data)
-
-            previous_node.next = new_node
+            new_node.next = previous_node.next
             new_node.prev = previous_node
-
-            next_node.prev = new_node
-            new_node.next = next_node
-
+            previous_node.next.prev = new_node
+            previous_node.next = new_node
             self.length += 1
 
         return True
@@ -188,11 +184,18 @@ class List:
         :param position: element's index (from 0)
         :return: list node
         """
-        current_node = self.head
-        current_index = 0
-        while current_node and current_index < position:
-            current_node = current_node.next
-            current_index += 1
+        if position <= (self.length - 1 - position):
+            current_index = 0
+            current_node = self.head
+            while current_node and current_index < position:
+                current_node = current_node.next
+                current_index += 1
+        else:
+            current_index = self.length - 1
+            current_node = self.tail
+            while current_node and current_index > position:
+                current_node = current_node.prev
+                current_index -= 1
         return current_node
 
     def _is_valid_index(self, index: int) -> bool:
@@ -205,9 +208,6 @@ class List:
 
 # to-do
 # 1. poprawic find_all_indexes czemu dziala bez obslugi bledu?
-# 3. W metodach takich jak insert, delete oraz _get_node można zoptymalizować dostęp do węzłów.
-# Zamiast iterować od początku listy, można zdecydować, czy lepiej zacząć iterację od głowy (head) czy od ogona (tail),
-# w zależności od pozycji, do której chcemy się dostać.
 # 4. W metodach takich jak pop, delete, insert oraz get_first_index warto rozważyć rzucanie odpowiednich wyjątków
 # (np. IndexError), zamiast zwracania wartości None lub False w przypadku błędu.
 # Zwiększy to czytelność kodu i ułatwi debugowanie.
