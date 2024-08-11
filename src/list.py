@@ -163,7 +163,6 @@ class List:
         """
         found_indexes = []
         current_index = 0
-        result = 0
 
         while current_index < self.length:
             try:

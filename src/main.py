@@ -1,4 +1,4 @@
-from list import List, ElementNotFoundError
+from list import List
 
 if __name__ == '__main__':
     # creating a list
